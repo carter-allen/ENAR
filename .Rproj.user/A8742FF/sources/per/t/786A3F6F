@@ -5,14 +5,14 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "258278129",
+    "hash" : "248797293",
     "id" : "786A3F6F",
-    "lastKnownWriteTime" : 1581809581,
-    "last_content_update" : 1581809581536,
+    "lastKnownWriteTime" : 1581813359,
+    "last_content_update" : 1581813359412,
     "path" : "~/Documents/School/Spring_2020/ENAR/slides.Rmd",
     "project_path" : "slides.Rmd",
     "properties" : {
-        "cursorPosition" : "6,0",
+        "cursorPosition" : "8,27",
         "scrollLine" : "0",
         "source_window_id" : "",
         "tempName" : "Untitled1"

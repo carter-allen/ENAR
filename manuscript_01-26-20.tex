@@ -1,0 +1,692 @@
+%  ALWAYS USE THE referee OPTION WITH PAPERS SUBMITTED TO BIOMETRICS!!!
+%  You can see what your paper would look like typeset by removing
+%  the referee option.  Because the typeset version will be in two
+%  columns, however, some of your equations may be too long. DO NOT
+%  use the \longequation option discussed in the user guide!!!  This option
+%  is reserved ONLY for equations that are impossible to split across
+%  multiple lines; e.g., a very wide matrix.  Instead, type your equations
+%  so that they stay in one column and are split across several lines,
+%  as are almost all equations in the journal.  Use a recent version of the
+%  journal as a guide.
+%
+\documentclass[useAMS,usenatbib,referee]{biom}
+\usepackage{amsmath}
+\usepackage{natbib}
+\usepackage{bbm}
+\usepackage{dsfont}
+\usepackage{graphicx}
+%\usepackage{blindtext}
+\usepackage{booktabs}
+%\usepackage{breqn}
+%\usepackage{algorithm}
+%\usepackage{algcompatible}
+%\usepackage{algpseudocode}
+\usepackage{float}
+%\usepackage{dutchcal}
+\usepackage{amsfonts}
+\usepackage{comment}
+\usepackage{url}
+
+
+\let\origfigure\figure
+\let\endorigfigure\endfigure
+\renewenvironment{figure}[1][2] {
+    \expandafter\origfigure\expandafter[H]
+} {
+    \endorigfigure
+}
+
+
+\def\bSig\mathbf{\Sigma}
+\newcommand{\VS}{V\&S}
+\newcommand{\tr}{\mbox{tr}}
+\newtheorem{prop}{Proposition}
+
+%  Here, place your title and author information.  Note that in
+%  use of the \author command, you create your own footnotes.  Follow
+%  the examples below in creating your author and affiliation information.
+%  Also consult a recent issue of the journal for examples of formatting.
+
+\title[]{A Bayesian multivariate mixture model for skewed longitudinal data with intermittent missing observations: An application to infant motor development}
+
+%  Here are examples of different configurations of author/affiliation
+%  displays.  According to the Biometrics style, in some instances,
+%  the convention is to have superscript *, **, etc footnotes to indicate
+%  which of multiple email addresses belong to which author.  In this case,
+%  use the \email{ } command to produce the emails in the display.
+
+%  In other cases, such as a single author or two authors from
+%  different institutions, there should be no footnoting.  Here, use
+%  the \emailx{ } command instead.
+
+%  The examples below correspond to almost every possible configuration
+%  of authors and may be used as a guide.  For other configurations, consult
+%  a recent issue of the the journal.
+
+%  Single author -- USE \emailx{ } here so that no asterisk footnoting
+%  for the email address will be produced.
+
+%\author{John Author\emailx{email@address.edu} \\
+%Department of Statistics, University of Warwick, Coventry CV4 7AL, U.K.}
+
+%  Two authors from the same institution, with both emails -- use
+%  \email{ } here to produce the asterisk footnoting for each email address
+
+%\author{John Author$^{*}$\email{author@address.edu} and
+%Kathy Authoress$^{**}$\email{email2@address.edu} \\
+%Department of Statistics, University of Warwick, Coventry CV4 7AL, U.K.}
+
+%  Exactly two authors from different institutions, with both emails
+%  USE \emailx{ } here so that no asterisk footnoting for the email address
+%  is produced.
+
+\author
+{\textbf{Carter Allen} \\
+Department of Biomedical Informatics, The Ohio State University, Columbus, OH, U.S.A.\\
+\textbf{Sara E. Benjamin-Neelon, PhD, JD} \\
+Department of Health, Behavior and Society, Johns Hopkins University, Baltimore, MD, U.S.A.\\
+\textbf{Brian Neelon, PhD}$^*$\email{neelon@musc.edu} \\
+Department of Public Health Sciences, Medical University of South Carolina, Charleston, SC, U.S.A.}
+
+%  Three or more authors from same institution with all emails displayed
+%  and footnoted using asterisks -- use \email{ }
+
+%\author{John Author$^*$\email{author@address.edu},
+%Jane Author$^{**}$\email{jane@address.edu}, and
+%Dick Author$^{***}$\email{dick@address.edu} \\
+%Department of Statistics, University of Warwick, Coventry CV4 7AL, U.K}
+
+%  Three or more authors from same institution with one corresponding email
+%  displayed
+
+%\author{John Author$^*$\email{author@address.edu},
+%Jane Author, and Dick Author \\
+%Department of Statistics, University of Warwick, Coventry CV4 7AL, U.K}
+
+%  Three or more authors, with at least two different institutions,
+%  more than one email displayed
+
+%\author{John Author$^{1,*}$\email{author@address.edu},
+%Kathy Author$^{2,**}$\email{anotherauthor@address.edu}, and
+%Wilma Flinstone$^{3,***}$\email{wilma@bedrock.edu} \\
+%$^{1}$Department of Statistics, University of Warwick, Coventry CV4 7AL, U.K \\
+%$^{2}$Department of Biostatistics, University of North Carolina at
+%Chapel Hill, Chapel Hill, North Carolina, U.S.A. \\
+%$^{3}$Department of Geology, University of Bedrock, Bedrock, Kansas, U.S.A.}
+
+%  Three or more authors with at least two different institutions and only
+%  one email displayed
+
+%\author{John Author$^{1,*}$\email{author@address.edu},
+%Wilma Flinstone$^{2}$, and Barney Rubble$^{2}$ \\
+%$^{1}$Department of Statistics, University of Warwick, Coventry CV4 7AL, U.K \\
+%$^{2}$Department of Geology, University of Bedrock, Bedrock, Kansas, U.S.A.}
+
+
+\begin{document}
+
+%  This will produce the submission and review information that appears
+%  right after the reference section.  Of course, it will be unknown when
+%  you submit your paper, so you can either leave this out or put in
+%  sample dates (these will have no effect on the fate of your paper in the
+%  review process!)
+
+\date{{\it Received October} 2007. {\it Revised February} 2008.  {\it
+Accepted March} 2008.}
+
+%  These options will count the number of pages and provide volume
+%  and date information in the upper left hand corner of the top of the
+%  first page as in published papers.  The \pagerange command will only
+%  work if you place the command \label{firstpage} near the beginning
+%  of the document and \label{lastpage} at the end of the document, as we
+%  have done in this template.
+
+%  Again, putting a volume number and date is for your own amusement and
+%  has no bearing on what actually happens to your paper!
+
+\pagerange{\pageref{firstpage}--\pageref{lastpage}}
+\volume{64}
+\pubyear{2008}
+\artmonth{December}
+
+%  The \doi command is where the DOI for your paper would be placed should it
+%  be published.  Again, if you make one up and stick it here, it means
+%  nothing!
+
+\doi{10.1111/j.1541-0420.2005.00454.x}
+
+%  This label and the label ``lastpage'' are used by the \pagerange
+%  command above to give the page range for the article.  You may have
+%  to process the document twice to get this to match up with what you
+%  expect.  When using the referee option, this will not count the pages
+%  with tables and figures.
+
+\label{firstpage}
+
+%  put the summary for your paper here
+
+\begin{abstract}
+In studies of infant growth, an important research goal is to identify latent clusters of infants with delayed motor development --- a risk factor for adverse outcomes later in life. However, there are numerous statistical challenges in modeling motor development: the data are typically skewed, exhibit intermittent missingness, and are correlated across repeated measurements over time. Using data from the Nurture study, a cohort of approximately 600 mother-infant pairs, we develop a flexible Bayesian mixture model for the analysis of infant motor development. First, we model developmental trajectories using matrix skew normal distributions with cluster-specific parameters to accommodate dependence and skewness in the data. Second, we model the cluster membership probabilities using a P\'olya-Gamma data-augmentation scheme, which improves predictions of the cluster membership allocations. Lastly, we impute missing responses from conditional multivariate skew normal distributions. Bayesian inference is achieved through straightforward Gibbs sampling. Through simulation studies, we show that the proposed model yields improved inferences over models that ignore skewness or adopt conventional imputation methods. We applied the model to the Nurture data and identified two distinct developmental clusters, as well as detrimental effects of food insecurity on motor development. These findings can aid investigators in targeting interventions during this critical early-life developmental window.
+\end{abstract}
+
+%  Please place your key words in alphabetical order, separated
+%  by semicolons, with the first letter of the first word capitalized,
+%  and a period at the end of the list.
+%
+
+\begin{keywords}
+Conditional ignorability; Intermittent missing; Matrix skew normal; Mixture of experts; Motor development; P\'olya-Gamma distribution.
+\end{keywords}
+
+%  As usual, the \maketitle command creates the title and author/affiliations
+%  display
+
+\maketitle
+
+\setcounter{tocdepth}{3}
+
+\newpage
+
+%  If you are using the referee option, a new page, numbered page 1, will
+%  start after the summary and keywords.  The page numbers thus count the
+%  number of pages of your manuscript in the preferred submission style.
+%  Remember, ``Normally, regular papers exceeding 25 pages and Reader Reaction
+%  papers exceeding 12 pages in (the preferred style) will be returned to
+%  the authors without review. The page limit includes acknowledgements,
+%  references, and appendices, but not tables and figures. The page count does
+%  not include the title page and abstract. A maximum of six (6) tables or
+%  figures combined is often required.''
+
+%  You may now place the substance of your manuscript here.  Please use
+%  the \section, \subsection, etc commands as described in the user guide.
+%  Please use \label and \ref commands to cross-reference sections, equations,
+%  tables, figures, etc.
+%
+%  Please DO NOT attempt to reformat the style of equation numbering!
+%  For that matter, please do not attempt to redefine anything!
+
+\section{Introduction}
+\label{s:intro}
+Infant motor development is an important predictor of health later in life. Early motor development is associated with improved physical activity, cognitive function, and educational attainment \citep{aaltonen2015motor,taanila2005infant}, while delayed motor development is associated with increased sedentary time \citep{sanchez2017prospective} and has been linked to adult cognitive disorders such as schizophrenia \citep{filatova2017early}. Thus, there is growing interest in identifying developmental patterns that may place infants at risk for long-term adverse health outcomes. One approach to tackling this problem is to identify underlying subgroups of infants with delayed motor development, and to isolate important predictors of subgroup membership. Our goal, therefore, is to introduce a flexible latent growth mixture model to detect high-risk developmental patterns and associated risk factors.
+
+Our work is motivated by the Nurture study, a birth cohort of predominately black women and their infants residing in the southeast United States \citep{neelon2017cohort}. The overall aim of the study was to examine how infant feeding, physical activity, motor development, sleep, and stress contribute to infant weight gain. A second aim was to identify infant subpopulations that exhibit unique motor development trajectories, and to examine cluster-specific associations between household food security and motor development.
+
+The Nurture data pose several statistical challenges. First, the repeated outcomes are correlated across measurement occasions. In the Nurture study, the pairwise correlations vary across time points, suggesting the need for a flexible error covariance structure. Second, the Nurture data are skewed, with the direction of skewness varying over time. The Nurture data also feature intermittent missingness throughout the study period. As such, we require a framework capable of addressing potentially non-ignorable missing data. Finally, we seek to develop a model that incorporates covariate information into both the multivariate regression model of infant development trajectories, as well as the clustering model.
+
+To address these challenges, we propose a Bayesian multivariate mixture model for the analysis of longitudinal skewed infant motor development data with intermittent missing observations. Our approach builds on recent work on mixture models for skewed cross-sectional data. Fr\"{u}hwirth-Schnatter and Pyne (2010) proposed a multivariate skew normal model for high-dimensional flow cytometric data. However, their focus was on marginal inference (i.e., density estimation) rather than cluster-specific inferences, as is our focus here. More recently, Lin {et al.} (2018) proposed a mixture of skew-$t$ factor analyzers for settings in which cluster-specific inference is of primary interest. However, like Fr\"{u}hwirth-Schnatter and Pyne (2010), their approach excluded covariates in the cluster-membership model, a focal point in our study as we expect demographics to not only play a key role in predicting cluster membership, but also help characterize developmental trajectories within clusters. Additionally, their approach, while quite flexible, relied on a computationally elaborate expectation--conditional maximization algorithm that does not enjoy the inferential benefits of a Bayesian approach. Finally, the authors adopted a single-imputation scheme for ignorable missing data that does not readily account for the uncertainty in the imputation process without additional multiple imputation steps.
+
+Our proposed model extends these prior studies in a number of ways. First, our model enables cluster-specific inferences on longitudinal growth trajectories, while accommodating skewness patterns that may vary over time and across clusters. Second, we estimate parameters in a Bayesian framework that introduces covariates into the cluster membership model using a novel application of P\'olya-Gamma data augmentation \citep{polson2013bayesian}. Third, we accommodate intermittent missingness of longitudinal responses under a ``conditional ignorability'' assumption whereby the missing data mechanism is assumed to be ignorable conditional on cluster assignment. Marginally, we allow for dependence between the missing data mechanism and the missing responses, thus relaxing standard missing at random (MAR) assumptions. We develop an online imputation procedure in which missing observations are updated iteratively conditional on cluster allocation. Finally, we propose a Bayesian inferential approach that makes use of convenient matrix skew-normal and skew-$t$ representations. This induces closed-form full conditional updates for all model parameters, leading to efficient posterior sampling and straightforward implementation in available software.
+
+\section{Nurture Study}
+\label{s:nurt}
+The Nurture study is a birth cohort of predominately black women and their infants residing in the southeastern United States from 2013 and 2017 \citep{neelon2017cohort}. The study followed mothers and infants for 12 months after birth and collected data on maternal feeding practices, infant physical activity and gross motor development, and household food security. Infant development was assessed quarterly at 3, 6, 9, and 12 months of age using the Bayley composite scale of motor development \citep{bayley2009bayley}, a standard measure of infant development ranging from 40 to 160, with higher scores indicating more advanced development compared to normally developing infants. Household food security study was assessed using the 18-item US Household Food Security Survey Module restricted to the 10 items related to household food security measured during pregnancy \citep{USDA}. Following standard protocol, a final dichotomous food security exposure was defined as ``food insecure'' households and ``food secure'' households. The Institutional Review Board of Duke University Medical Center approved this study and protocol.
+
+Of the 666 infants who were consented into the study, 106 were missing Bayley score measurements at all timepoints. We restricted our analytic sample to the 560 remaining infants who had at least one non-missing Bayley score over the study period. Of the $560\times 4=2240$ possible observations, $471\, (21\%)$ were missing, leaving an available-case sample size of $1769$. Sample characteristics for the 560 participants are given in Web Table 1. In the sample, 68\% of infants were black and 39\% of households identified as food insecure during pregnancy. The Bayley motor development scores ranged from 49.0 to 145.0 across visits, with a mean of 102.4 and standard deviation (SD) of 13.5. {Figure 1} presents trajectory plots of the motor development scores for each infant in the available-case sample, with an overlay of the mean score at each visit. The plot indicates substantial heterogeneity in the trajectories, with a modest but statistically significant ($\text{coef} = -1.16$; $\text{p} < 0.01$) decline in scores, suggesting decreased motor development over time in the Nurture cohort relative to normally developing infants. However, because most of the literature on infant motor development has focused on the average effect over time \citep{shoaibi2019longitudinal}, little is known about trends for specific subgroups of interest -- for example, among infants who may be at high-risk for delayed motor milestone achievement.
+
+\begin{figure}[h]
+\caption{\label{fig:bayley_profiles} Longitudinal profile plot of infant development trajectories, with mean Bayley motor development score shown in black. Plot is based on the $N=1769$ available measurements for $n=560$ infants.}
+\includegraphics[width = 1\textwidth]{bayley_profile_plot.jpg}
+\end{figure}
+
+{Figure 2} presents the scaled residual densities from a repeated-measures linear regression based on available cases with Bayley score as the outcome. The model included an unstructured covariance matrix and adjusted for the covariates in Web Table 1. The residuals were subset by visit to yield visit-specific residual density plots. As shown in {Figure 2}, the residuals are skewed at each visit, particularly at 3 and 6 months, with the direction of skewness varying over time. Shapiro-Wilk tests accounting for multiple testing rejected the null hypothesis of normality at 6 months, contravening standard assumptions. While there is a modest indication of skewness in the available-case sample, it is not clear how skewness patterns vary across latent subgroups of infants, or how missing observations impact skewness. We seek to answer these questions in subsequent analyses.
+
+\begin{figure}[h]
+\caption{\label{fig:skew_resids} Scaled residual plots at each visit based on a repeated-measures linear regression model with Bayley score as the outcome. Sample skewness statistics and p-values from Shapiro-Wilk (SW) tests are provide in the legends. Plots are based on the $N=1769$ available measurements for $n=560$ infants.}
+\includegraphics[width = 1\textwidth]{rm_resids_plot_bytime.jpg}
+\end{figure}
+
+Additionally, the motor development scores are correlated over time, with pairwise correlations ranging in an unstructured pattern over time. As an illustration, we fit three repeated measures models with standardized Bayley score as the outcome and varying correlation structures for the errors: AR1, compound symmetric and unstructured. The models included monthly visit as a categorical predictor and adjusted for the covariates in Web Table 1. The AIC values for these models were 27599, 27517, and 27478 respectively, indicating optimal fit under the unstructured pattern. We present the estimated correlation matrix from this model in {Web Table 2}. The pairwise correlations ranged from 0.14 to 0.27 across visits with no discernable structure. Finally, the Nurture data feature intermittent missing data, with approximately one third of the sample missing observations at each visit (Web Table 1). While it may be reasonable to assume that the missing data are missing at random (MAR), as we have no {\em a priori} reason to believe that the occurrence of missing observations is directly related to missing Bayley scores, we relax this assumption below by assuming ignorable missingness conditional on latent motor development cluster assignment.
+
+\section{Model}
+\label{s:model}
+\subsection{Multivariate Skew Normal Mixture Model}
+We propose a finite mixture model that accommodates relevant features of the data, namely skewness, missing values, and dependence among the responses. While alternative mixture models (e.g., Dirichlet process mixtures) provide flexibility for marginal inferences and density estimation, finite mixtures are appealing when the focus is on practical within-cluster inferences. In such cases, the primary goal is to identify a small number of clinically relevant clusters to help design targeted interventions to improve health outcomes. However, to avoid underfitting in finite mixtures, it is imperative to properly model the within-cluster distributions by accounting for important features, such as skewness or heavy tails. With this goal in mind, we present a repeated measures regression model based on a multivariate skew normal distribution --- and by extension, a multivariate skew-$t$ distribution  --- in which the Bayley scores across the $J$ measurement occasions represent correlated responses. Specifically, let $\mathbf{y}_{i}=(y_{i1},\ldots,y_{iJ})^T$ be a $J \times 1$ vector of standardized Bayley scores for subject $i\;(i=1,\ldots,n)$. We propose a mixture model of the form
+\begin{equation}
+	\label{eq:mixture}
+f(\mathbf{y}_i) = \sum_{k = 1}^{K} \pi_{ki} f(\mathbf{y}_i|\boldsymbol\theta_k),
+\end{equation}
+where $\boldsymbol\theta_k$ is the set of parameters specific to cluster $k$ ($k = 1,...,K$) and $\pi_{ki}$ is a subject-specific mixing weight representing the probability that subject $i$ belongs to cluster $k$. For now we assume that $K$ is fixed; we discuss model-selection strategies for choosing the optimal value of $K$ in Section 3.5.3.
+
+For posterior inference, we introduce a latent cluster indicator variable $z_i$ taking the value $k \in \{1,...,K\}$ with probability $\pi_{ki}$. Given $z_i = k$, we assume $\mathbf{y}_{i}$ is distributed according to a $J$-dimensional multivariate skew normal (MSN) density \citep{azzalini1996multivariate}:
+\begin{eqnarray}
+\mathbf{y}_{i}|(z_i=k) &\stackrel{ind}{\sim}& \text{MSN}_J(\boldsymbol\zeta_{ki},\boldsymbol\alpha_k,\boldsymbol\Omega_k), ~\text{with density} \label{eq:msndens}\nonumber\\
+f(\mathbf{y}_i|z_i=k) &=& 2\phi_J(\mathbf{y}_i;\boldsymbol\zeta_{ki},\boldsymbol\Omega_k)\Phi[\boldsymbol\alpha^T_k(\mathbf{y}_i-\boldsymbol\zeta_{ki})],
+\end{eqnarray}
+where $\phi_J(\mathbf{y}_i;\boldsymbol\zeta_{ki},\boldsymbol\Omega_k)$ denotes a $J$-dimensional normal density with mean $\boldsymbol\zeta_{ki}$ and covariance matrix $\boldsymbol\Omega_k$; $\Phi(\cdot)$ is the CDF of a scale standard normal random variable; $\boldsymbol\zeta_{ki}$ is a $J \times 1$ vector of subject- and cluster-specific location parameters; $\boldsymbol\alpha_k$ is a $J \times 1$ vector of cluster-specific skewness parameters; and $\boldsymbol\Omega_k$ is a $J \times J$ cluster-specific scale matrix that captures dependence among the $J$ responses for subject $i$. The vector $\boldsymbol\alpha_k$ has components $\alpha_{kj}$, $j = 1,...,J$, that control the skewness of outcome $j$ in cluster $k$. When $\boldsymbol\alpha_k = \mathbf{0}$, the MSN distribution reduces to the multivariate normal (MVN) distribution $\text{N}_J(\boldsymbol\zeta_{ki},\boldsymbol\Omega_k)$, where $\boldsymbol\zeta_{ki}$ represents a $J \times 1$ mean vector and $\boldsymbol\Omega_k$ is a $J \times J$ unstructured covariance matrix.
+
+We can extend model (\ref{eq:msndens}) to the regression setting by modeling $\boldsymbol\zeta_{ki}$ as a function of covariates. Here, we adopt a convenient stochastic representation of the MSN density \citep{azzalini1996multivariate, fruhwirth2010bayesian}:
+\begin{eqnarray}
+\mathbf{y}_{i}|(z_i=k,t_i) &=& \mathbf{X}_i \boldsymbol\beta_k + t_i \boldsymbol\psi_k + \boldsymbol\epsilon_{ki}, \label{eq:msnreg}
+\end{eqnarray}
+where $\mathbf{X}_i$ is a $J \times Jp$ design matrix that includes potential time-dependent covariates; $\boldsymbol{\beta}_k=(\beta_{k11},\ldots,\beta_{k1p},\ldots,\beta_{kJ1},\ldots,\beta_{kJp})^T$ is a $Jp\times 1$ vector of cluster- and outcome-specific regression coefficients; $t_i\sim \text{N}_{[0,\infty)}(0,1)$ is a subject-specific standard normal random variable truncated below by zero; $\boldsymbol\psi_k=(\psi_{k1},\ldots,\psi_{kJ})^T$ is a $J \times 1$ vector of cluster-specific parameters that control skewness; and $\boldsymbol{\epsilon}_{ki} \sim \text{N}_J(\boldsymbol0,\boldsymbol\Sigma_k)$ is a $J\times 1$ vector of correlated error terms. Thus, conditional on $t_i$ and $z_i=k$, $\boldsymbol{y}_i$ is distributed as $\text{N}_J(\mathbf{X}_i \boldsymbol\beta_k + t_i \boldsymbol\psi_k, \boldsymbol{\Sigma}_k)$. Marginally (integrated over $t_i$), $\mathbf{y}_i|(z_i = k)$ is distributed $\text{MSN}_J(\boldsymbol\zeta_{ki}, \boldsymbol\alpha_k, \boldsymbol\Omega_k)$, where through back-transformation
+\begin{eqnarray}
+\label{eq:backtrans}
+\boldsymbol\zeta_{ki} &=& \mathbf{X}_i\boldsymbol\beta_k, \nonumber \\
+\boldsymbol\Omega_k &=& \boldsymbol\Sigma_k  + \boldsymbol\psi_k \boldsymbol\psi_k^T,\label{eq:back_transform}\\
+\boldsymbol\alpha_k &=& \frac{1}{\sqrt{1 - \boldsymbol\psi_k^T
+\boldsymbol\Omega^{-1}_k\boldsymbol\psi_k}} \boldsymbol\omega_k \boldsymbol\Omega^{-1}_k\boldsymbol\psi_k~~\text{and}\nonumber\\
+ \boldsymbol\omega_k &=& \text{Diag}(\boldsymbol\Omega_k)^{1/2}.\nonumber
+\end{eqnarray}
+As detailed in online supplement, conjugate full conditionals are available for all parameters in model (\ref{eq:msnreg}), leading to straightforward Gibbs sampling. However, the Nurture analysis described in Section \ref{s:app} involves no time-varying covariates, only time-varying covariate effects. In such cases, we can express the MSN density more compactly using a matrix skew normal (MatSN) representation. Structuring the data in this way greatly facilitates posterior computation by permitting low-dimensional matrix updates for the regression coefficients. For cluster $k$, let $\mathbf{Y}_k$ be an ${n_k \times J}$ matrix with rows $\mathbf{y}_i^T$ for $i = 1,...,n_k$, where $n_k$ is the number of subjects in cluster $k$. From equation (\ref{eq:msndens}), it follows that $\mathbf{Y}_k$ is distributed as
+\begin{eqnarray}
+\mathbf{Y}_{k} &\sim& \text{MatSN}_{n_k \times J}(\mathbf{X}_k\mathbf{B}_k,\boldsymbol\alpha_k,\mathbf{I}_{n_k},\boldsymbol\Omega_k), \label{eq:matsn}
+\end{eqnarray}
+where $\mathbf{I}_{n_k}$ is the $n_k\times n_k$ identity matrix, and $\mathbf{X}_k$ and $\mathbf{B}_k$ are, respectively, $n_k\times p$ and $p\times J$ matrices of the form
+\vspace{6pt}
+\[
+\mathbf{X}_k=\begin{pmatrix}x_{11} & \ldots & x_{1p}\\
+              \vdots & \ddots & \vdots \\
+              x_{n_k1} & \ldots & x_{n_kp} \end{pmatrix}
+ ~~\text{and}~~
+\mathbf{B}_k=\begin{pmatrix} \beta_{k11} & \ldots & \beta_{k1J}\\
+              \vdots & \ddots & \vdots \\
+              \beta_{kp1} & \ldots & \beta_{kpJ} \end{pmatrix}.
+\]
+\vspace{6pt}
+Note that if we set $x_{i1}=1$ for all $i$, then the first row of $\mathbf{B}_k$, $(\beta_{k11},\dots,\beta_{k1J})$, represents time-specific intercepts that capture the time trend for the reference covariate group in cluster $k$. Adapting equation (7) from Chen and Gupta (2005), the density function for $\mathbf{Y}_k$ is
+\begin{equation}
+f(\mathbf{Y}_{k})=2^{n_k}\phi_{n_k\times J}(\mathbf{Y}_{k};\mathbf{X}_k\mathbf{B}_k,\mathbf{I}_{n_k},\boldsymbol\Omega_k)\Phi_{n_k}[(\mathbf{Y}_{k}-\mathbf{X}_k\mathbf{B}_k)\boldsymbol\alpha_k],
+\end{equation}
+where $\phi_{n_k\times J}(\mathbf{Y}_{k};\mathbf{X}_k\mathbf{B}_k,\mathbf{I}_{n_k},\boldsymbol\Omega_k)$ is the density function for a matrix normal (MatNorm) random variable of dimension $n_k\times J$ with mean $\mathbf{X}_k\mathbf{B}_k$ and scale matrices $\mathbf{I}_{n_k}$ and $\boldsymbol\Omega_k$, and $\Phi_{n_k}(\cdot)$ denotes the CDF of an $n_k$-dimensional standard MVN random variable.
+
+Further, let $\mathbf{t}_{k} = (t_1,...,t_{n_k})^T$ denote the $n_k\times 1$ vector of latent variables for cluster $k$. By extending equation (\ref{eq:msnreg}), it follows that the conditional distribution of $\mathbf{Y}_k$ given $\mathbf{t}_{k}$ is
+\begin{eqnarray}
+\label{eq:matnormal}
+\mathbf{Y}_k | \mathbf{t}_k &\sim& \text{MatNorm}_{n_k \times J}(\mathbf{X}^*_k\mathbf{B}^*_k, \mathbf{I}_{n_k}, \boldsymbol\Sigma_k)
+\end{eqnarray}
+where $\mathbf{X}^*_k$ is an $n_k \times (p+1)$ augmented design matrix formed by right column-binding $\mathbf{t}_{k}$ to $\mathbf{X}_k$, $\mathbf{B}^*_k$ is a $(p+1)\times J$ matrix of regression coefficients formed by lower row-binding $\boldsymbol\psi_k=(\psi_1,\ldots,\psi_J)^T$ to $\mathbf{B}_k$, and $\boldsymbol\Sigma_k$ is the $J\times J$ covariance of $\boldsymbol\epsilon_{ik}$ in equation (\ref{eq:msnreg}). This matrix normal representation admits conditionally conjugate prior distributions, which in turn leads to efficient Gibbs sampling for posterior inference. We formalize this in the following proposition, which establishes the conditional conjugacy of $\mathbf{B}^*_k$ and $\boldsymbol\Sigma_k$:
+\begin{prop}
+\label{prop1}
+Let $\mathbf{B}^*_k$ and $\boldsymbol\Sigma_k$ in equation (\ref{eq:matnormal}) have a joint Matrix Normal--Inverse Wishart (IW) prior, denoted MatNorm--IW$_{(p+1)\times J}(\mathbf{B}^*_{0k},\mathbf{L}_{0k},\nu_{0k},\mathbf{V}_{0k})$, of the form
+\begin{eqnarray*}
+\pi(\mathbf{B}^*_k,\boldsymbol\Sigma_k)&=&\pi(\mathbf{B}^*_k|\boldsymbol\Sigma_k)\pi(\boldsymbol\Sigma_k)\\
+&=&\text{MatNorm}_{(p+1)\times J}(\mathbf{B}^*_{0k},\mathbf{L}_{0k},\boldsymbol\Sigma_k)\text{IW}(\nu_{0k},\mathbf{V}_{0k}),
+\end{eqnarray*}
+where $\mathbf{B}^*_{0k}$ is a $(p+1)\times J$ prior location matrix, $\mathbf{L}_{0k}$ and $\mathbf{V}_{0k}$ are, respectively, $(p+1)\times(p+1)$ and $J\times J$ prior scale matrices, and $\nu_{0k}$ denotes the prior degrees of freedom. Then, the full conditional distribution of $\mathbf{B}^*_k$ is MatNorm$_{(p+1)\times J}(\mathbb{B}^*_k,\mathbf{L}_k,\boldsymbol\Sigma_k)$, where
+\begin{eqnarray*}
+	\mathbb{B}^*_k &=& \mathbf{L}_k(\mathbf{L}^{-1}_{0k} \mathbf{B}^*_{0k}+\mathbf{X}^{*T}_k \mathbf{Y}_k) ~ \text{and} \\
+	\mathbf{L}_k &=& (\mathbf{L}^{-1}_{0k}+\mathbf{X}^{*T}_k \mathbf{X}^*_k)^{-1},
+\end{eqnarray*}
+and $\mathbf{X}^*_k$ is the augmented covariate matrix defined in equation (\ref{eq:matnormal}). Likewise, the full conditional distribution of $\boldsymbol\Sigma_k$ is IW$(\nu_k,\mathbf{V}_k)$, where
+\begin{eqnarray*}
+    \nu_k&=&\nu_0+n_k+p+1~~\text{and}\\
+	\mathbf{V}_k &=&  \mathbf{V}_{0k}+ (\mathbf{B}_k^* - \mathbf{B}^*_{0k})^T \mathbf{L}^{-1}_{0k}(\mathbf{B}^*_k - \mathbf{B}^*_{0k}) + (\mathbf{Y}_k-\mathbf{X}^*_k\mathbf{B}^*_k)^T (\mathbf{Y}_k - \mathbf{X}^*_k\mathbf{B}^*_k).
+\end{eqnarray*}
+The proof is provided in Web Appendix A.
+\end{prop}
+
+\subsection{P\'olya--Gamma Multinomial Regression for Cluster Probabilities}
+\label{s:multinom}
+To accommodate heterogeneity in the cluster-membership probabilities, we model $\pi_{ki}$ as a function of covariates using a multinomial logit model
+\begin{eqnarray}
+\label{eq:pik}
+\pi_{ki} = \Pr(z_i = k|\mathbf{w}_i) = \frac{\text{e}^{\mathbf{w}_i^T \boldsymbol\delta_k}}{\sum_{h = 1}^K \text{e}^{\mathbf{w}_i^T \boldsymbol\delta_{h}}},~ k=1,\ldots,K,
+\end{eqnarray}
+where $\mathbf{w}_i$ is an $r\times 1$ vector of subject-level covariates, $\boldsymbol\delta_k$ is a $r\times 1$ vector of cluster-specific regression parameters. For identifiability, we choose category $K$ as reference and set $\boldsymbol\delta_K = \mathbf{0}$. By allowing the cluster probabilities to vary across subjects, model (\ref{eq:mixture}) can be viewed as a \textit{mixture of experts} model, in which $\pi_{ki}$ acts as a \textit{gating function} controlling the prior probability of membership in cluster $k$, and $f(\mathbf{y}_i|\boldsymbol\theta_k)$ is the ``expert'' providing information on the within-cluster distribution of $\mathbf{y}_i$ \citep{bishop2006pattern}. An appealing feature of the mixture of experts model is the ability to discern cluster membership using information contained in the covariates $\mathbf{w}_i$. As a result, the gating functions can yield accurate cluster allocations even when the cluster-specific densities $f(\mathbf{y}_i | \boldsymbol\theta_k)$ are similar across clusters.
+
+To facilitate sampling, we adopt the efficient data-augmentation approach introduced by Polson {et al.} (2013), which expresses the inverse-logit function as a scale-normal mixture of P\'olya--Gamma densities. By using P\'olya--Gamma data augmentation for the multinomial model, we obtain a \textit{P\'olya--Gamma mixture of experts model} --- a computationally efficient way to obtain inferences for the mixing weights in a Bayesian setting. A random variable ${w}$ is said to follow a P\'olya--Gamma distribution with parameters $b > 0$ and $c \in \mathbb{R}$ if
+\begin{equation}
+{w} \sim \text{PG}(b,c) \stackrel{d}{=} \frac{1}{2\pi^2}\sum_{s=1}^{\infty}\frac{g_s}{(s-1/2)^2 + c^2/(4\pi^2)}, \label{eq:pg1}
+\end{equation}
+where $g_s \stackrel{iid}{\sim} \text{Ga}(b,1)$ for $s = 1,...,\infty$ . Polson {et al.} (2013) establish two key properties of the $\text{PG}(b,c)$ density. First, for $a,\eta \in \mathbb{R}$,
+\begin{equation}
+\frac{(\text{e}^{\eta})^a}{(1 + \text{e}^{\eta})^b} = 2^{-b}\text{e}^{\kappa \eta} \int_{0}^{\infty} \text{e}^{-{w}\eta^2/2}p({w}|b,c = 0)d{w}, \label{eq:pg2}
+\end{equation}
+where $\kappa = a - b/2$ and $p(w|b,c = 0)$ denotes a $\text{PG}(b,0)$ density. If we choose $a=y$ and $b=1$, then the left-hand side of equation (\ref{eq:pg2}) has the same functional form as a logistic regression likelihood for a binary outcome $y$. Note also that the right-hand side includes the kernel of a normal distribution for a random variable $\eta$ with precision $w$. Next, the conditional distribution $p(w|b,c)$ results from ``exponential tilting'' the $\text{PG}(b,0)$ density:
+\begin{equation}
+	p({w}|b,c) = \frac{\text{e}^{-c^2{w}/2}p({w}|b,0)}{\text{E}_{{w}}[\text{e}^{-c^2{w}/2}]} = \frac{\text{e}^{-c^2{w}/2}p({w}|b,0)}{\int_0^\infty \text{e}^{-c^2{w}/2}p({w}|b,0)d{w}}. \label{eq:pg3}
+\end{equation}
+These results imply that, for a logistic regression model, the likelihood can be written as a scale-mixture of normal densities with P\'olya-Gamma precision terms $w$, resulting in closed-form MVN full conditional distributions for logistic regression parameters. Details can be found in Polson et al. (2013). To extend the augmentation approach to the multinomial setting, we first introduce the binary indicators $U_{ki}$, such that $U_{ki} = \mathds{1}_{(z_i = k)}$; that is, $U_{ki}$ is an indicator variable taking the value $1$ if subject $i$ belongs to cluster $k$, and $0$ otherwise. The conditional distribution of $\boldsymbol\delta_k$, given $\mathbf{U}_k = (U_{k1},...,U_{kn})^T$ and the remaining regression coefficients $\boldsymbol\delta_{h\ne k}$, is
+\begin{eqnarray}
+p(\boldsymbol\delta_k|\mathbf{z},\boldsymbol\delta_{h \ne k})= p(\boldsymbol\delta_k|\mathbf{U}_k,\boldsymbol\delta_{h \ne k})\propto p(\boldsymbol\delta_k) \prod_{i = 1}^{n} \pi_{ki}^{U_{ki}}(1-\pi_{ki})^{1-U_{ki}}, \label{eq:delta}
+\end{eqnarray}
+where $p(\boldsymbol\delta_k)$ denotes the prior distribution of $\boldsymbol\delta_k$, $U_{ki}$ is defined above, and $\pi_{ki}$ is defined as in equation (\ref{eq:pik}). We can rewrite $\pi_{ki}$ in terms of $U_{ki}$ as
+\[
+\pi_{ki} = \Pr(U_{ki} = 1) = \frac{\text{e}^{\mathbf{w}_i^T \boldsymbol\delta_k}}{\sum_{h = 1}^K \text{e}^{\mathbf{w}_i^T \boldsymbol\delta_h}}= \frac{\text{e}^{\mathbf{w}_i^T \boldsymbol\delta_k}}{\sum_{h \ne k}^K \text{e}^{\mathbf{w}_i^T \boldsymbol\delta_h} + \text{e}^{\mathbf{w}_i^T \boldsymbol\delta_k}},
+\]
+where dividing throughout by $\sum_{h \ne k}^K \text{e}^{\mathbf{w}_i^T \boldsymbol\delta_h}$ yields
+\[
+\pi_{ki} = \frac{\text{e}^{\mathbf{w}_i^T \boldsymbol\delta_k - {c}_{ki}}}{1 + \text{e}^{\mathbf{w}_i^T \boldsymbol\delta_k - {c}_{ki}}} = \frac{\text{e}^{\eta_{ki}}}{1 + \text{e}^{\eta_{ki}}},
+\]
+with ${c}_{ki} = \log \sum_{h \ne k} \text{e}^{\mathbf{w}_i^T \boldsymbol\delta_{h}}$ and $\eta_{ki} = \mathbf{w}_i^T \boldsymbol\delta_k - {c}_{ki}$. We can use these quantities to re-express equation (\ref{eq:delta}) as
+\begin{eqnarray}
+	p(\boldsymbol\delta_k|\mathbf{z},\boldsymbol\delta_{h \ne k}) &\propto& p(\boldsymbol\delta_k) \prod_{i = 1}^{n} \left (\frac{\text{e}^{\eta_{ki}}}{1 + \text{e}^{\eta_{ki}}} \right )^{U_{ki}} \left (\frac{1}{1 + \text{e}^{\eta_{ki}}} \right )^{1-U_{ki}} \nonumber\\ &=& p(\boldsymbol\delta_k) \prod_{i = 1}^n \frac{(\text{e}^{\eta_{ki}})^{U_{ki}}}{1 + \text{e}^{\eta_{ki}}}, \label{eq:pglogit}
+\end{eqnarray}
+where the product term denotes the likelihood from a logistic regression model. We can therefore apply the P\'olya--Gamma sampler for logistic regression to update each $\boldsymbol\delta_k$ one at a time based on the binary indicators $U_{ki}$. First, we define for $k = 1,...,K$, the $n \times 1$ vector $\mathbf{U}^*_{k} = \left( \frac{U_{k1}-1/2}{w_{k1}} + c_{k1},...,\frac{U_{kn}-1/2}{w_{kn}} + c_{kn} \right )^T$. As shown in Web Appendix B, the conditional distribution of $\mathbf{U}^*_{k}$ given $\boldsymbol{w} = (w_{k1},...,w_{kn})^T$ is $\text{N}_n (\mathbf{W}\boldsymbol\delta_k,\mathbf{O}_k^{-1})$, where $\mathbf{O}_k = \text{Diag}(w_{k1},...,w_{kn})$ and $\mathbf{W}$ is an $n\times r$ design matrix with rows $\mathbf{w}^T_i$ for $i=1,\ldots,n$. Thus, the full conditional distribution of $\boldsymbol\delta_k$ is given by
+\begin{equation}
+	p(\boldsymbol\delta_k|\mathbf{z}, \mathbf{O}_k, \boldsymbol\delta_{h \ne k}) \propto p(\boldsymbol\delta_k) \text{exp} \left \{ - \frac{1}{2} (\mathbf{U}^*_k - \mathbf{W}\boldsymbol\delta_k)^T \mathbf{O}_k (\mathbf{U}^*_k - \mathbf{W}\boldsymbol\delta_k)\right \}.
+\end{equation}
+Assuming a $\text{N}_r(\mathbf{d}_{0k},\mathbf{S}_{0k})$ prior for $\boldsymbol\delta_k$, we have the following Gibbs updates for the clustering model:
+
+\begin{enumerate}
+\item For $k = 1,...,K-1$ and $i=1,\ldots,n$, update the P\'olya--Gamma weight, $w_{ki}$, from its PG$(1,\eta_{ki})$ full conditional.
+
+\item For $k = 1,...,K-1$, update $\boldsymbol\delta_k$ from its $\text{N}_r(\mathbf{d}_{k},\mathbf{S}_{k})$ full conditional, where
+\begin{eqnarray}
+	\mathbf{S}_{k} &=& (\mathbf{S}^{-1}_{0k} + \mathbf{W}^T\mathbf{O}_k\mathbf{W})^{-1}, \ \text{and} \nonumber\\
+	\mathbf{d}_{k} &=& \mathbf{S}_{k}(\mathbf{S}^{-1}_{0k}\mathbf{d}_{0k} + \mathbf{W}^T \mathbf{O}_k \mathbf{U}^*_k).\nonumber \label{eq:pg_coef_updates}
+\end{eqnarray}
+\item For $i=1,\ldots,n$, draw the latent cluster indicator, $z_i$, from its multinomial full conditional as described in Web Appendix B.
+\end{enumerate}
+
+\subsection{Extensions to Multivariate Skew-$t$ Distributions}
+To accommodate outliers and heavy tails, we extend equation (\ref{eq:mixture}) by assuming, conditional on $z_i = k$, that $\mathbf{y}_i$ follows a multivariate skew-$t$ (MST) distribution \citep{gupta2003multivariate}:
+\begin{eqnarray}
+\mathbf{y}_{i}|(z_i=k) &\stackrel{ind}{\sim}& \text{MST}_J(\boldsymbol\zeta_{ki},\boldsymbol\alpha_k,\boldsymbol\Omega_k,\nu_k), ~\text{with density} \label{eq:mstdens}\nonumber\\
+f(\mathbf{y}_i|z_i=k) &=& 2f_{t_J}(\mathbf{y}_i;\boldsymbol\zeta_{ki},\boldsymbol\Omega_k,\nu_k)T_{\nu_k + J} \left ( \boldsymbol\alpha^T_k(\mathbf{y}_i-\boldsymbol\zeta_{ki})\sqrt{\frac{\nu_k+J}{\nu_k+Q_{y_i}}} \right ),
+\end{eqnarray}
+where $f_{t_J}(\mathbf{y}_i;\boldsymbol\zeta_{ki},\boldsymbol\Omega_k,\nu_k)$ denotes the CDF of a $J$-dimensional $t$ distribution with location $\boldsymbol\zeta_{ki}$, covariance $\boldsymbol\Omega_k$, and fixed degrees of freedom $\nu_k$ that may vary across clusters; $T_{\nu_k + J}$ denotes the distribution function of the scalar standard $t$ distribution with $\nu_k + J$ degrees of freedom; and $Q_{y_i} = (\mathbf{y}_i-\boldsymbol\zeta_{ki})^T\boldsymbol\Omega_k^{-1}(\mathbf{y}_i-\boldsymbol\zeta_{ki})$. As before, we adopt a stochastic representation for $\mathbf{y}_i$ to facilitate Gibbs sampling \citep{fruhwirth2010bayesian}. Specifically, we augment the MSN stochastic representation in equation (\ref{eq:msnreg}) by introducing subject-specific scale terms, $d_i$, yielding an MST regression of the form:
+\begin{eqnarray}
+\mathbf{y}_{i}|(z_i=k,t_i,d_i) &=& \mathbf{X}_i \boldsymbol\beta_k +  \frac{t_i}{\sqrt{d_i}}\boldsymbol\psi_k + \frac{1}{\sqrt{d_i}}\boldsymbol\epsilon_{ki}, \label{eq:mstreg}
+\end{eqnarray}
+where $d_i \sim \text{Gamma} \left (\frac{\xi}{2},\frac{\xi}{2} \right )$, with $\xi$ being a pre-specified degrees of freedom parameter shared across clusters, and $t_i$ and $\boldsymbol\epsilon_{ki}$ are defined as in equation (\ref{eq:msnreg}). In principle, $\xi$ may vary across clusters (becoming $\xi_k$), though we set it to be fixed across clusters here for simplicity. For posterior inference, we first draw $d_i|(z_i=k)$ from its Gamma full conditional as described in Web Appendix B. We then form cluster-specific scaled response and design matrices $\tilde{\mathbf{Y}}_{k}=\sqrt{\mathbf{d}_k}\circ\mathbf{Y}_{k}$ and $\tilde{\mathbf{X}}_k=\sqrt{\mathbf{d}_k}\circ\mathbf{X}^*_k$ from equation (\ref{eq:matnormal}), where the $n_k\times 1$ vector $\sqrt{\mathbf{d}_k}$ has elements $\sqrt{d_i}$ for all $i$ in cluster $k$ and ``$\circ$'' denotes the Hadamard product. Finally, we fit equation (\ref{eq:matnormal}) to the scaled data to update the remaining model parameters.
+
+\subsection{Cluster-Specific Imputation under Conditional Ignorability}
+\label{s:imp}
+To accommodate intermittent missing data, we propose a convenient imputation algorithm in which we assume that the missingness mechanism is conditionally ignorable given the cluster indicators $z_i$, extending recent work on latent class pattern mixture models for informative dropout \citep{roy2007latent}. Here, $z_i$ functions as discrete shared parameter that induces unobserved association between the missingness process and the missing data. Suppose $\mathbf{y}_i$ has $q_i\in (1,\ldots,J)$ observed values, denoted $\mathbf{y}^{obs}_i$, and $J-q_i$ intermittent missing values, denoted $\mathbf{y}^{miss}_i$. Let $\mathbf{R}_i=(R_{i1},\ldots,R_{iJ})^T$ be a $J\times 1$ vector of binary response indicators, such that $R_{ij}=1$ if infant $i$ has a Bayley measurement at visit $j$. Under conditional ignorability, the conditional distribution of $\mathbf{R}_i$ given $(z_i,\mathbf{y}^{obs}_i,\mathbf{y}^{miss}_i)$ is
+\begin{eqnarray}
+f(\mathbf{R}_i|z_i=k,\mathbf{y}^{obs}_i,\mathbf{y}^{miss}_i,\mathbf{X}_i,\boldsymbol\gamma_k)=f(\mathbf{R}_i|z_i=k,\mathbf{y}^{obs}_i,\mathbf{X}_i,\boldsymbol\gamma_k)\label{eq:response}
+\end{eqnarray}
+where, in this context, $\mathbf{X}_i$ is a $J\times m$ design matrix and $\boldsymbol\gamma_k$ is an $m\times 1$ vector of cluster-specific parameters related to the missing data mechanism.
+
+Under conditional ignorability, conditioning on $z_i$ ensures that $\mathbf{R}_i$ does not depend on the missing observations $\mathbf{y}^{miss}_i$. We can therefore impute $\mathbf{y}^{miss}_i$ from its conditional MVN distribution given $(z_i,t_i,\mathbf{y}^{obs}_i)$ as follows. Let $\boldsymbol\mu_{ki}= \mathbf{X}_i \boldsymbol\beta_k + t_i \boldsymbol\psi_k$ from equation (\ref{eq:msnreg}). We first partition $\boldsymbol\mu_{ki}$ and $\boldsymbol\Sigma_k$, the variance of $\boldsymbol\epsilon_{ki}$ in equation (\ref{eq:msnreg}), as
+\[
+\boldsymbol\mu_{ki} = \begin{pmatrix} \boldsymbol\mu_{ki}^{miss} \\ \boldsymbol\mu_{ki}^{obs} \end{pmatrix}~\text{and}~
+\boldsymbol\Sigma_k = \begin{pmatrix}
+	\boldsymbol\Sigma_{k11} & \boldsymbol\Sigma_{k12}\\
+	\boldsymbol\Sigma_{k21} & \boldsymbol\Sigma_{k22}\end{pmatrix};
+\]
+we then impute $\mathbf{y}^{miss}_i$ according to
+\begin{eqnarray}
+	\label{eq:cond_forms}
+\mathbf{y}^{miss}_i|(z_i=k,t_i,\mathbf{y}^{obs}_i)&\sim& \text{N}_{J-q_i}(\boldsymbol\mu^{cond}_{ki},\boldsymbol\Sigma^{cond}_k),~\text{where}\nonumber\\
+\boldsymbol\mu^{cond}_{ki}&=& \boldsymbol\mu^{miss}_{ki} + \boldsymbol\Sigma_{k12} \boldsymbol\Sigma_{k22}^{-1}(\mathbf{y}^{obs}_i - \boldsymbol\mu^{obs}_{ki})~\text{and}\label{eq:impute}  \\
+\boldsymbol\Sigma^{cond}_k&=& \boldsymbol\Sigma_{k11} - \boldsymbol\Sigma_{k12}\boldsymbol\Sigma_{k22}^{-1}\boldsymbol\Sigma_{k21}.\nonumber
+\end{eqnarray}
+These results follow from conventional multivariate normal theory. Note that, while the complete data vector $\mathbf{y}_i=\{\mathbf{y}^{obs}_i,\mathbf{y}^{miss}_i\}$ follows a MVN distribution conditional on $t_i$, after marginalizing over $t_i$, $\mathbf{y}_i$ follows a joint MSN distribution. Thus, the proposed conditional imputation procedure provides a convenient way of imputing missing MSN responses using samples from more standard densities.
+
+Finally, given $z_i=k$, we independently model the $J$ response indicators for infant $i$ as
+\begin{eqnarray}
+	\label{eq:miss_mod}
+(R_{ij}|z_i=k,b_{ik})&\stackrel{ind}{\sim}&\text{Bern}(\phi_{ijk}),~~j=1,\ldots,J\nonumber\\
+\text{logit}(\phi_{ijk})&=&\mathbf{x}^T_{ij}\boldsymbol\gamma_k+b_{ki},
+\end{eqnarray}
+where $\mathbf{x}_{ij}$ is an $m\times 1$ vector of covariates, and $\boldsymbol\gamma_k$ is the $m\times 1$ vector of cluster-specific regression parameters from equation (\ref{eq:response}). Equation (\ref{eq:miss_mod}) may additionally include terms for the observed outcomes $\mathbf{y}^{obs}_i$ (e.g., baseline Bayley score). Because the response indicators may be correlated over time, we also include a subject-level random intercept $b_{ki}$ conditionally distributed as N$(0,\sigma^2_k)$ given $z_i=k$. Although we assume conditional ignorability of $\mathbf{R}_i$ and $\mathbf{y}^{miss}_i$ given $z_i$, because the $\phi_{ijk}$ terms from model (\ref{eq:miss_mod}) appear in the full conditional update for $z_i$ (Web Appendix B), $\mathbf{R}_i$ and $\mathbf{y}^{miss}_i$ are marginally correlated, resulting in a marginal missing not at random (MNAR) mechanism.
+
+\subsection{Bayesian Inference}
+\label{s:bayesinf}
+\subsubsection{Prior Specification}
+\label{s:priors}
+We adopt a Bayesian approach and assign prior distributions to all model parameters. For designs not involving time-dependent covariates, we assign a joint MatNorm--IW$_{(p+1)\times J}(\mathbf{B}^*_{0k},\mathbf{L}_{0k},\nu_{0k},\mathbf{V}_{0k})$ to $(\mathbf{B}^*_k,\boldsymbol\Sigma_k)$ as described in Proposition 1. For time-varying designs, we assign independent MVN priors to $\boldsymbol\beta_k$ and $\boldsymbol\psi_k$ from equation (\ref{eq:msnreg}); details are provided in Step 5(b) of Web Appendix B. For the multinomial logit model, the regression parameters $\boldsymbol\delta_k = (\delta_{k1},...,\delta_{kr})^T$ are assigned a $\text{N}_r(\mathbf{d}_{0k}, \mathbf{S}_{0k})$ prior for $k = 1,...,K-1$, which is conditionally conjugate under the P\'olya--Gamma sampling scheme described in Section \ref{s:multinom}. Finally, from equation (\ref{eq:miss_mod}), we assume a N$_m(\mathbf{g}_{0k},\mathbf{G}_{0k})$ prior for $\boldsymbol\gamma_k$ and an inverse-gamma IG$(\lambda_{1k},\lambda_{2k})$ prior for $\sigma^2_k$, where $\lambda_{2k}$ is a scale parameter. In general, hyperparameters can vary across clusters, though they may be shared across clusters in practice. For the skew-$t$ model, we assume $d_i \sim \text{Gamma} \left (\frac{\xi}{2},\frac{\xi}{2} \right )$, where $\xi$ is a pre-specified value. More generally, one can place a Gamma prior on $\xi$ and use Metropolis-Hastings for posterior updating.
+
+\subsubsection{Posterior Computation}
+\label{s:postcomp}
+The above prior specification induces closed-form full conditionals for all model parameters, which can be efficiently updated as part of the Gibbs sampler outlined below.
+Details of the MCMC sampler are provided in Web Appendix B.
+\begin{enumerate}
+\item For $i=1,\ldots,n$, impute $\mathbf{y}_i^{miss}$ from its MVN full conditional as described in equation (\ref{eq:impute}). Conclude by constructing a complete outcome vector $\mathbf{y}_i$.
+\item Using P\'{o}lya--Gamma augmentation, update the parameters for the missing data model in equation (\ref{eq:miss_mod}) from their full conditionals, as described in Web Appendix B.
+\item Draw the cluster-membership parameters, $w_{ki}$, $\boldsymbol\delta_k$ and $z_i$, from their full conditionals, as described at the end of Section \ref{s:multinom}.
+\item For $i=1,\ldots,n$, update the latent truncated normal variable, $t_i$, from its cluster-specific truncated normal full conditional given $z_i=k$.
+\item For analysis involving no time-varying covariates, update $\mathbf{B}^*_k$ and $\boldsymbol\Sigma_k$ ($k=1,\ldots,K)$ using the results from Proposition 1. For the MST model, we additionally draw latent scale terms $d_i$ $(i=1,\ldots,n)$ from their Gamma full conditionals, construct the augmented data $\tilde{\mathbf{Y}}_k$ and $\tilde{\mathbf{X}}_k$, and use these in the remaining updates. We back-transform using equation (\ref{eq:back_transform}) to recover the original MSN and MST parameters. For the skew-$t$ model, the back-transformations will employ $\tilde{\mathbf{Y}}_k$ and $\tilde{\mathbf{X}}_k$. For designs with time-varying covariates, we update $\boldsymbol\beta_k$ and $\boldsymbol\psi_k$ from equation (\ref{eq:msnreg}) using MSN or MST updates as described in Steps 5(b) and 6(b) of Appendix B.
+\end{enumerate}
+
+\subsubsection{Assessment of MCMC Convergence, Label Switching, and Model Selection}
+\label{s:mcmcmisc}
+We monitor MCMC convergence through standard diagnostics, such trace plots and effective sample sizes. To address label switching, a common issue for Bayesian mixture models, we implemented the iterative ECR relabeling algorithm included in the \texttt{label.switching} package in \texttt{R} \citep{papastamoulis2015label}. In our simulation studies and application, we observed immediate convergence of the ECR algorithm, indicating no evidence of label switching in our analyses. Because our primary objective is to identify a small number of clinically meaningful motor development clusters, we adopt the widely applicable information criterion (WAIC) to select the number of clusters $K$ \citep{watanabe2010asymptotic}. In Section \ref{s:waic}, we demonstrate that this measure accurately recovers the true number of clusters under realistic parameter settings.
+
+\section{Simulation Studies}
+\label{s:sim}
+
+\subsection{Simulation to Compare the MSN Model to the MVN Model}
+Our first simulation compared MSN and MVN mixture models to investigate whether ignoring skewness leads to poor inferences in a setting resembling the Nurture study. To emulate the Nurture study, we simulated $n = 1000$ subjects from the following model
+\begin{eqnarray}
+	\label{eq:sim1}
+	f(\mathbf{y}_i) = \sum_{k = 1}^3 \pi_{ki} f(\mathbf{y}_i | \boldsymbol\theta_k),
+\end{eqnarray}
+where $\mathbf{y}_i = (y_{i1},...,y_{i4})^T$ to conform to the $J = 4$ measurement occasions in the Nurture study; $\boldsymbol\theta_k$ is the set of parameters specific to cluster $k$ ($k = 1,2,3$), and $f(\mathbf{y}_i | \boldsymbol\theta_k) \stackrel{\text{d}}{=} \text{MSN}_4(\boldsymbol\zeta_{ki},\boldsymbol\alpha_k,\boldsymbol\Omega_k)$; $\boldsymbol\zeta_{ki} = (\zeta_{ki1},...,\zeta_{ki4})^T$, $\zeta_{ki1}=\beta_{kj1} + \beta_{kj2}x_i$, and $x_i$ is a N$(0,1)$ covariate whose effect varies across the $J$ measurement occasions. We modeled the cluster probabilities in equation (\ref{eq:pik}) as a function of an intercept and one baseline covariate, $\text{w}_{i1}$, implying that $r = 2$. We did not introduce missing data into this simulation, as we address missing data in the second simulation study. As a result, the total number of complete measurements was $N = n \times J = 4000$. The generated data included $n_1=318$ infants in cluster 1, $n_2=288$ in cluster 2, and $n_3=394$ in cluster 3.
+
+Because the model included no time-varying covariates --- only time-varying effects --- we used the matrix normal formulation given in Proposition 1, yielding a $(p+1)\times J=3 \times 4$ matrix $\mathbf{B}_k^*$. We chose the matrix normal hyperparameters described in Section \ref{s:priors} to be homogeneous across the three clusters by setting, for $k = 1,2,3$, $\mathbf{B}_{0k}^* = \mathbf{0}_{3 \times 4}$, $\mathbf{L}_{0k}=\mathbf{I}_{3}$, $\mathbf{V}_{0k} = \mathbf{I}_{4}$, and $\nu_{0k} = J + 2 = 6$, which gives $\text{E}(\boldsymbol\Sigma_k) = \mathbf{I}_{4}$. Similarly, for the clustering model, we set $\mathbf{d}_{01} = \mathbf{d}_{02} = (0,0)^T$ and $\mathbf{S}_{01} = \mathbf{S}_{02} = \mathbf{I}_{2}$, noting that $k = 3$ is the reference cluster. To investigate the effect of ignoring skewness, we allowed the vector of skewness parameters, $\boldsymbol\alpha_k$, to vary across clusters; for cluster 3, we assumed no skewness ($\boldsymbol\alpha_k=\boldsymbol0$), implying MVN data for this cluster. We then fit both the MSN and MVN mixture models to data generated from model (\ref{eq:sim1}). We ran the MCMC for 10000 iterations with a burn-in of 1000. MCMC diagnostics indicated rapid convergence and excellent mixing (Web Figure 1).
+
+The WAIC values for the MSN and MVN mixture models were 12112 and 17499, respectively, indicating better fit for the MSN model, as expected. Table \ref{tab:sim1_parms} presents posterior mean estimates and 95\% credible intervals for cluster 1 from the MSN and MVN models. Web Table 3 presents the results for the other two clusters. As expected, the MSN model provided accurate estimates throughout, whereas the MVN model consistently produced incorrect estimates with poor coverage when data were skewed, as in clusters 1 and 2. In particular, ignoring skewness inflated the variance estimates under the MVN model as a way to compensate for the skewness in the data. However, when data were not skewed, as in cluster 3, both models performed similarly (Web Table 3). Thus, the MSN model can be reliably used in place of the MVN model even when data are not overtly skewed.
+
+\begin{table}[t]
+\caption{\label{tab:sim1_parms}Results for cluster 1 from Simulation Study 1 with n = 1000, J = 4, p = 2, K = 3, r = 2. 10000 iterations were run with a burn in of 1000. Posterior means (95\% CrIs) are presented for the multivariate skew normal (MSN) and multivariate normal (MVN) mixtures. No missing data were introduced.}
+\begin{center}
+\begin{tabular}{lllll}
+\toprule
+                    &                   & \textbf{True}  &                     &           \\
+\textbf{Component} & \textbf{Parameter} & \textbf{Value} & MSN Est. (95\% CrI) & MVN Est. (95\% CrI) \\
+\midrule
+MSN & $\beta_{111}$ & 110.00 & 110.20 (109.97, 110.41) & 106.36 (105.97, 108.71)\\
+Regression & $\beta_{121}$ & 115.00 & 115.13 (114.91, 115.33) & 104.17 (103.93, 104.44) \\
+ & $\beta_{131}$ & 120.00 & 120.08 (119.83, 120.49) & 128.02 (128.57, 129.08) \\
+ & $\beta_{141}$ & 125.00 & 125.15 (124.86, 125.49) & 126.67 (126.31, 127.05) \\
+ & $\beta_{112}$ & 1.00 & 0.97 (0.84, 1.11) & 0.90 (0.74, 1.08)\\
+ & $\beta_{122}$ & 1.50 & 1.51 (1.40, 1.62) & 1.53 (1.41, 1.66)\\
+ & $\beta_{132}$ & 2.00 & 2.01 (1.89, 2.14) & 2.20 (2.08, 2.33)\\
+ & $\beta_{142}$ & 2.50 & 2.50 (2.35, 2.66) & 2.46 (2.28, 2.64)\\
+\addlinespace[0.2em]
+\multicolumn{5}{l}{\textbf{ }}\\
+\hspace{1em} & $\Sigma_{111}$ & 1.00 & 0.96 (0.77, 1.14) & 2.42 (2.06, 2.84) \\
+\hspace{1em} & $\Sigma_{112}$ & 0.50 & 0.47 (0.34, 0.61) & 1.20 (0.99, 1.48) \\
+\hspace{1em} & $\Sigma_{113}$ & 0.25 & 0.25 (0.04, 0.40) & -0.54 (-0.75, -0.34) \\
+\hspace{1em} & $\Sigma_{114}$ & 0.12 & 0.11 (-0.02, 0.30) & -1.35 (-1.67, -1.06)\\
+\hspace{1em} & $\Sigma_{122}$ & 1.00 & 0.99 (0.74, 1.19) & 1.20 (0.99, 1.48) \\
+\hspace{1em} & $\Sigma_{123}$ & 0.50 & 0.49 (0.26, 0.66) & 1.24 (1.06, 1.46)\\
+\hspace{1em} & $\Sigma_{124}$ & 0.25 & 0.24 (0.10, 0.43) & 0.08 (-0.06, 0.21) \\
+\hspace{1em} & $\Sigma_{133}$ & 1.00 & 0.99 (0.77, 1.09) & 1.24 (1.06, 1.46)\\
+\hspace{1em} & $\Sigma_{134}$ & 0.50 & 0.47 (0.22, 0.65) & 1.15 (0.93, 1.40) \\
+\hspace{1em} & $\Sigma_{144}$ & 1.00 & 1.01 (0.63, 1.23) & 2.48 (2.15, 2.91)\\
+\addlinespace[0.2em]
+\multicolumn{5}{l}{\textbf{ }}\\
+ & $\alpha_{11}$ & -2.00 & -2.05 (-2.28, -1.66) &     / \\
+ & $\alpha_{12}$ & -1.00 & -1.01 (-1.30, -0.75)&     / \\
+ & $\alpha_{13}$ & 1.00 & 0.97 (0.65, 1.28) &     / \\
+ & $\alpha_{14}$ & 2.00 & 1.97 (1.67, 2.28) &     / \\
+\addlinespace[0.2em]
+\multicolumn{5}{l}{\textbf{ }}\\
+Multinomial & $\delta_{11}$ & -0.27 & -0.23 (-0.47, -0.09) & -0.14 (-0.35, 0.08)\\
+Logit$^{\dagger}$& $\delta_{12}$ & 0.07 & 0.07 (-0.24, 0.37) & 0.08 (-0.24, 0.38)\\
+\addlinespace[0.2em]
+\multicolumn{5}{l}{\textbf{ }}\\
+Missing & $\gamma_{11}$ & -0.82 & -0.84 (-0.96, -0.73) & -1.08 (-1.19, -0.99) \\
+Data& $\gamma_{12}$ & -1.08 & -1.01 (-1.20, -0.91) & -1.80 (-1.96, -1.64)\\
+\hspace{1em} & $\gamma_{13}$ & -1.12 & -1.08 (-1.20, -1.00) & -0.90 (-1.00, -0.80)\\
+\hspace{1em} & $\sigma^2_{1}$ & 1.00 & 1.07 (0.92, 1.28) & 0.89 (0.76, 1.07)\\
+\addlinespace[0.2em]
+\multicolumn{5}{l}{\textbf{ }}\\
+Estimated proportion$^{\ddagger}$ & $\pi_1$ & 0.32 & 0.32 (0.31, 0.33) & 0.32 (0.30, 0.34)\\
+\bottomrule
+\end{tabular}\vspace{.75cm}
+\end{center}
+$\dagger$ Multinomial logit parameters comparing cluster 1 to cluster 3 (reference cluster).\\[4pt]
+$\ddagger$ Estimated proportion of infants in cluster 1. True proportion is 0.32.
+\end{table}
+
+\subsection{Simulation to Compare Imputation Methods}
+Next, we compared three competing methods for imputing missing response values. The first method was the MNAR online imputation approach proposed in Section \ref{s:imp}. We also fit MAR online imputation and Bayesian multiple imputation (MI). We defined MAR online imputation to be imputation of $\mathbf{y}_i^{miss}$ as in equation (\ref{eq:cond_forms}) under a global MAR assumption. Thus, we ignored the missing data model (\ref{eq:miss_mod}) when updating the cluster indicators $z_i$, implying marginal as well as conditional ignorability. Finally, we implemented Bayesian MI, the standard approach for handling missing data whereby many imputed data sets are generated via MVN imputation of missing responses, MCMC is performed on each imputed data set, and the posterior samples are pooled for final inference. Here, the missing responses are imputed under a marginal MVN assumption prior to modeling, and hence this imputation method ignored skewness, clustering, and the missing data model.
+
+To compare the three methods, we generated $n = 1000$ observations from a three-cluster ($K = 3$) MSN mixture model similar in design to simulation 1. We then removed observations intermittently across the 4 measurement occasions according to model (\ref{eq:miss_mod}), which included three continuous covariates but no fixed intercept, implying $m = 3$ from equation (19). The model also included a random intercept with a common variance of $\sigma^2_k = 1$ across clusters. After removing missing data, the number of available measurements in each cluster was $N_1=1463$, $N_2=819$ and $N_3=1209$. We ran each model for 10000 iterations with a burn-in of 1000. MCMC diagnostics showed rapid convergence (see Web Figure 2 for diagnostics for the MNAR online model).
+
+As described by \citet{zhou2010note}, Bayesian MI requires a large number of imputations. Accordingly, we generated $1000$ imputed data sets by assuming a MVN distribution for $\mathbf{y}_i$, where the mean and covariance parameters were estimated from the observed responses. The MI procedure required 36 hours of computation utilizing parallelization across 8 cores, compared to 17 minutes for non-parallelized versions of the online MNAR and MAR methods, illustrating the computational gains of online imputation. Results for cluster 1 are presented in Table \ref{tab:sim2}. Results for clusters 2 and 3 are given in Web Table 4.
+\begin{table}[t]
+\caption{\label{tab:sim2} Results for cluster 1 from Simulation Study 2. Posterior means (95\% CrIs) are presented under online MNAR imputation (MNAR), online MAR imputation (MAR), and Bayesian multiple imputation (MI) as described in Section \ref{s:imp}.}
+\begin{center}
+\begin{tabular}{llllll}
+\toprule
+\textbf{Model} & & \textbf{True} & & & \\
+\textbf{Component} & \textbf{Parameter} & \textbf{Value} & \textbf{MNAR} & \textbf{MAR} & \textbf{MI}\\
+\midrule
+\textbf{k = 1} & $\beta_{111}$ & -2.90 & -3.02 (-3.62, -2.56) & -4.10 (-5.70, -2.10) & -4.23 (-14.03, -1.37)\\
+& $\beta_{121}$ & -2.70 & -2.85 (-2.99, -2.71) & -2.81 (-3.84, -2.19) & -2.97 (-13.68, -1.84)\\
+MSN & $\beta_{131}$ & -2.92 & -2.84 (-3.53, -2.38) & -4.25 (-4.95, -2.10) & -4.21 (-4.91, -1.54)\\
+Regression & $\beta_{141}$ & -3.68 & -3.88 (-4.03, -3.65) & -3.67 (-3.98, -3.08) & -3.57 (-3.95, -2.88)\\
+& $\beta_{112}$ & -2.78 & -2.68 (-3.40, -2.23) & -4.52 (-5.39, -2.13) & -4.31 (-4.86, -1.92)\\
+& $\beta_{122}$ & -2.59 & -2.83 (-2.96, -2.70) & -2.68 (-3.23, -2.19) & -2.53 (-2.95, -1.78)\\
+& $\beta_{132}$ & -2.71 & -2.46 (-3.38, -2.14) & -4.14 (-4.80, -1.51) & -4.18 (-4.98, -1.46)\\
+& $\beta_{142}$ & -2.79 & -2.98 (-3.11, -2.84) & -2.45 (-3.02, -1.88) & -2.33 (-2.99, -1.51)\\
+\addlinespace[0.2em]
+\multicolumn{5}{l}{\textbf{ }}\\
+& $\Sigma_{111}$ & 1.00 & 1.14 (0.70, 1.64) & 1.18 (0.64, 2.25) & 2.30 (1.41, 4.02)\\
+& $\Sigma_{112}$ & 0.50 & 0.58 (0.21, 1.17) & 0.81 (0.29, 1.82) & 1.45 (0.64, 3.04)\\
+& $\Sigma_{113}$ & 0.25 & 0.25 (0.14, 0.34) & 0.38 (0.01, 1.23) & 0.80 (0.16, 2.09)\\
+& $\Sigma_{114}$ & 0.12 & 0.14 (0.06, 0.23) & 0.19 (-0.13, 0.91) & 0.91 (0.20, 2.18)\\
+& $\Sigma_{122}$ & 1.00 & 0.97 (0.58, 1.70) & 1.33 (0.73, 2.32) & 1.61 (0.86, 3.10)\\
+& $\Sigma_{123}$ & 0.50 & 0.52 (0.14, 1.04) & 0.69 (0.23, 1.51) & 0.67 (0.16, 1.85)\\
+& $\Sigma_{124}$ & 0.25 & 0.24 (0.06, 0.39) & 0.38 (-0.03, 1.08) & 0.43 (-0.14, 1.65)\\
+& $\Sigma_{133}$ & 1.00 & 1.32 (0.81, 1.89) & 0.99 (0.57, 1.78) & 0.91 (0.20, 2.18)\\
+& $\Sigma_{134}$ & 0.50 & 0.55 (0.26, 0.83) & 0.45 (0.09, 1.07) & 0.52 (0.11, 1.49)\\
+& $\Sigma_{144}$ & 1.00 & 0.98 (0.60, 1.57) & 0.95 (0.50, 1.60) & 1.32 (0.78, 2.34)\\
+\addlinespace[0.2em]
+\multicolumn{5}{l}{\textbf{ }}\\
+& $\alpha_{11}$ & -1.00 & -0.81 (-1.38, -0.05) & 1.98 (-1.17, 4.04) & 1.67 (-4.53, 4.64)\\
+& $\alpha_{12}$ & -1.00 & -1.10 (-1.63, -0.23) & 2.12 (-1.25, 3.46) & 2.23 (-1.43, 3.41)\\
+& $\alpha_{13}$ & -1.00 & -1.08 (-1.7, -0.14) & 2.50 (-1.25, 3.40) & 2.37 (-1.04, 3.57)\\
+& $\alpha_{14}$ & -1.00 & -1.31 (-1.66, -0.73) & 2.43 (-1.35, 3.50) & 2.43 (-0.98, 3.98)\\
+\addlinespace[0.2em]
+\multicolumn{5}{l}{\textbf{ }}\\
+Multinomial & $\delta_{11}$ & -0.54 & -0.54 (-0.73, -0.33) & -0.54 (-0.75, -0.33) & -0.52 (-0.72, -0.3)\\
+Logit$^{\dagger}$ & $\delta_{12}$ & -0.01 & -0.01 (-0.31, 0.28) & -0.02 (-0.33, 0.28) & -0.02 (-0.33, 0.28)\\
+\addlinespace[0.2em]
+\multicolumn{5}{l}{\textbf{ }}\\
+Missing Data & $\gamma_{11}$ & -1.10 & -1.09 (-1.36, -0.84) &  / & / \\
+& $\gamma_{12}$ & -1.27 & -1.04 (-1.33, -0.81) & / & / \\
+& $\gamma_{13}$ & -1.07 & -1.06 (-1.33, -0.80)& / & / \\
+& $\sigma^2_{1}$ & 1.00 & 1.01 (0.86, 1.15) & / & / \\
+\bottomrule
+\end{tabular}\vspace{.75cm}
+\end{center}
+$\dagger$ Multinomial logit parameters comparing cluster 1 to cluster 3 (reference cluster).
+\end{table}
+
+As shown in Table \ref{tab:sim2}, the online MNAR imputation method is the only method of the three that recovered true parameter values. Ignoring or making incorrect assumptions regarding the missing data mechanism resulted in incorrect inference. The poor performance of Bayesian MI method is likely due to the fact that it ignores clustering during the imputation phase and instead imputes missing responses under a marginal MVN distribution. Thus, it ignores important modeling considerations such as skewness and clustering. By comparison, MAR imputation does make cluster-specific inferences; however, it does not take into account the missing data model, which again results in poor inference. Results for the other two clusters show similar behavior {(Web Table 4)}. Taken together, these results suggest that under the conditional ignorability assumption described in Section \ref{s:imp}, ignoring the missing data model (\ref{eq:miss_mod}) can lead to highly biased estimates.
+
+\subsection{Simulation to Validate Choice of K}
+\label{s:waic}
+We conducted a final simulation to validate the use of WAIC for determining the number of clusters, $K$. We generated data sets from MSN models with $K = \{2,3,4,5\}$. For each simulated data set, we fit the proposed Bayesian MSN model with $K = \{2,3,4,5\}$ and computed WAIC in each case. For each scenario, we ran the MCMC algorithms for 10000 iterations with a burn-in of 1000. MCMC diagnostics indicated rapid convergence for all models (Web Figure 3). As shown in Web Table 5, the WAIC measure recovered the true value of $K$ in all cases. For some simulations (e.g., true $K = 2$), we were unable to fit the MSN model when the fitted $K$ was large due to the occurrence of vacant clusters during MCMC sampling. We have found that this generally occurs when the data do not support large values of $K$.
+
+\section{Application to Nurture Study}
+\label{s:app}
+We applied our proposed model to the Nurture data by fitting an MSN mixture model that included standardized Bayley scores as the response, indicators for the four study visits, and binary food security status as the exposure of interest. The model also included time-invariant birth weight for gestational age z-score, number of children in the household, and an indicator for breastfeeding, as these likely impact infant development within each cluster. We excluded an intercept, but allowed the covariate effects to vary over time, resulting in a parameter dimension of $p=20$ for this component of the model (Table \ref{tab:fs_parms}). For the multinomial logit cluster-membership model, we included an intercept, birth weight for gestational age z-score, infant race, and infant gender as covariates, as these variables are believed to affect the placement of infants into latent development clusters. The 471 missing measurements were imputed using the online MNAR imputation method described in Section 3.4. The missing data model (\ref{eq:miss_mod}) included a fixed intercept, birth weight for gestational age z-score, infant gender, infant race, and a random intercept. To select the number of clusters, we fit several MSN models with varying specifications for $K$, and used WAIC to chose the best fitting model. The WAIC values were 9141, 10088, 11203, and 11410 for $K = 2,3,4,5$, respectively. We also fit 3-df MST models with $2, 3, 4$, and 5 clusters; these yielded WAIC values of 13228, 13934, 14002, and 14356 respectively, suggesting that the 2-cluster MSN model provided best fit among all models considered. We ran each model for 10000 MCMC iterations, with a burn in of 1000. We observed fast MCMC convergence in all cases with no evidence of label switching. MCMC diagnostics for the 2-cluster MSN model are presented in Web Figure 4.
+
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+Table \ref{tab:fs_parms} presents posterior means and 95\% credible intervals (CrIs) for the 2-cluster model.
+\begin{table}
+\begin{center}
+\caption{\label{tab:fs_parms} Results from the 2-cluster model applied to the Nurture data. Posterior means (95\% CrI) are presented in each cluster for the effects of time, food security during pregnancy (FS), birth weight for gestational age z-score (BW), any breastfeeding throughout the study period (BF), and total number of children in the household (TC). The effects of time, FS, BW, BF and TC were allowed to vary over time, yielding separate estimates for each 3-month visit. Posterior means (95\% CrI) are also given for effects of birth weight for gestational age z-score, race, and gender in the multinomial logit clustering and missing data models.}
+\begin{tabular}{@{}llllll@{}}
+\toprule
+ \textbf{Model}& & &\textbf{Cluster 1 (37.0\%)$^{\dagger}$} & \textbf{Cluster 2 (63.0\%)$^{\dagger}$} \\
+ \textbf{Component} & \textbf{Parameter} &  \textbf{Variable}& Est. (95\% CrI) & Est. (95\% CrI) \\\midrule
+ & $\beta_{k11}$ & 3 mo. & -0.33 (-0.48, -0.18) & 0.26 (-0.04, 0.53) \\
+ & $\beta_{k21}$& 6 mo. & -0.22 (-0.37, -0.05) & 0.54 (0.17, 0.86) \\
+ & $\beta_{k31}$& 9 mo. & -0.20 (-0.52, 0.11) & 0.10 (-0.47, 0.56)\\
+ & $\beta_{k41}$&12 mo. & -0.35 (-0.45, -0.27) & 0.80 (0.37, 1.11) \\
+ & $\beta_{k12}$&FS (3 mo.) & -0.55 (-0.68, -0.40) & -0.10 (-0.28, 0.12) \\
+ & $\beta_{k22}$&FS (6 mo.) & -0.40 (-0.56, -0.23) & 0.08 (-0.08, 0.32) \\
+ & $\beta_{k32}$&FS (9 mo.) & -0.22 (-0.41, -0.03) & -0.15 (-0.27, -0.02) \\
+ & $\beta_{k42}$&FS (12 mo.)& -0.33 (-0.50, -0.12) & -0.13 (-0.26, -0.06) \\
+ & $\beta_{k13}$&BW (3 mo.) & -0.02 (-0.09, 0.06) & 0.07 (-0.05, 0.16) \\
+ MSN Reg. & $\beta_{k23}$& BW (6 mo.) & -0.03 (-0.11, 0.04) & 0.03 (-0.09, 0.11)\\
+ & $\beta_{k33}$&BW (9 mo.) & -0.03 (-0.13, 0.06) & 0.11 (-0.07, 0.29) \\
+ & $\beta_{k43}$&BW (12 mo.) & -0.03 (-0.11, 0.04) &  0.06 (-0.05, 0.14) \\
+ & $\beta_{k14}$&BF (3 mo.) & 0.41 (0.29, 0.51) & 0.07 (-0.15, 0.22)\\
+ & $\beta_{k24}$&BF (6 mo.) & 0.46 (0.36, 0.55) & 0.04 (-0.14, 0.20) \\
+ & $\beta_{k34}$&BF (9 mo.) & 0.62 (0.30, 0.91) & 0.03 (-0.05, 0.12) \\
+ & $\beta_{k44}$&BF (12 mo.)& 0.17 (-0.21, 0.55) & 0.04 (-0.12, 0.24) \\
+ & $\beta_{k15}$&TC (3 mo.) & 0.01 (-0.03, 0.06) & -0.02 (-0.09, 0.05) \\
+ & $\beta_{k25}$&TC (6 mo.) & 0.02 (-0.02, 0.06) & -0.07 (-0.13, -0.02) \\
+ & $\beta_{k35}$&TC (9 mo.) & 0.02 (-0.03, 0.07) & 0.00 (-0.06, 0.06) \\
+ & $\beta_{k45}$&TC (12 mo.) & 0.01 (-0.03, 0.06) & 0.17 (-0.01, 0.35)\\
+ \addlinespace[0.2em]
+ & $\alpha_{k1}$&Skewness (3 mo.) & 0.00 (-0.12, 0.11) & 0.16 (-0.23, 0.41)\\
+ & $\alpha_{k2}$&Skewness (6 mo.) & -0.02 (-0.15, 0.1) & -0.53 (-0.80, -0.17)\\
+ & $\alpha_{k3}$&Skewness (9 mo.) & -0.02 (-0.16, 0.13) & 0.05 (-0.32, 0.44)\\
+ & $\alpha_{k4}$&Skewness (12 mo.)& -0.03 (-0.16, 0.10) & -0.07 (-0.41, 0.28)\\ \midrule
+ & $\delta_{k1}$& Intercept & 1.03 (0.79, 1.25) & Ref. \\
+ & $\delta_{k2}$&BW & 0.03 (-0.09, 0.15) & Ref.\\
+ Multinomial Logit$^{\ddagger}$ & $\delta_{k3}$&Race (Black) & -0.02 (-0.29, 0.27) & Ref. \\
+ & $\delta_{k4}$&Gender (Female) & 0.90 (0.65, 1.27) & Ref. \\ \midrule
+ & $\gamma_{k1}$ & Intercept & 0.37 (0.32, 0.41) & -0.16 (-0.19, -0.14)\\
+ & $\gamma_{k2}$  & BW & 0.05 (-0.51, 0.59)& 0.03 (-0.14, 0.19)\\
+Missing Data  & $\gamma_{k3}$  & Gender (Female) & 0.80 (0.25, 1.57)& -0.04 (-0.41, 0.30)\\
+ & $\gamma_{k4}$  & Race (Black)& 0.35 (-0.56, 1.37)  & -0.60 (-1.02, -0.20)\\
+ & $\sigma^2_k$ & Random Int. Var. & 1.34 (0.86, 1.74) & 1.11 (0.79, 1.43)\\ \bottomrule
+\end{tabular}\vspace{.75cm}
+\end{center}
+$\dagger$ Posterior mean percent in each cluster.\\
+$\ddagger$ With only 2 clusters, this reduces to a conventional logistic model.
+\end{table}
+In cluster 1, we observed a significant detrimental effect of food insecurity at each timepoint.  However, in cluster 2, we only observed a significant detrimental effect of food insecurity at months 9 and 12, though the effect sizes were more modest than in cluster 1. These trends are also displayed in Figure \ref{fig:app_plot}. We observed a significant positive effect of breastfeeding in cluster 1, but not in cluster 2, suggesting that breastfeeding may especially benefit infants exhibiting delayed motor development. We did not observe a significant effect of either birth weight z-score or number of children in the household. From the P\'olya--Gamma multinomial logit component, we found that female infants were more likely to belong to cluster 1. From the missing data model, the intercepts suggest more missing observations for infants in cluster 1 compared to those in cluster 2, at least for the reference covariate group. Moreover, female infants in cluster 1 had significantly higher log-odds of missing a measurement compared to male infants in cluster 1, while black infants in cluster 2 had significantly lower log-odds of missing a measurement compared to other infants.
+
+\begin{figure}[h]
+	\caption{\label{fig:app_plot}Predicted motor development trajectories for each cluster and food security group in the Nurture analysis. Estimated trajectories are given for a typical infant with a birth weight for gestational age z-score of 0, who was not breastfed, and who had 2.5 other children in the household. Solid lines indicate Cluster 1 and dashed lines indicate Cluster 2. Light shading represents food-secure infants, while dark shading represents food-insecure infants.}
+	\includegraphics[width = 1\textwidth]{application_plot.jpg}
+\end{figure}
+
+As shown in Table \ref{tab:fs_parms}, the skewness estimates for cluster 1 indicate little evidence of skewness, as all associated 95\% credible intervals contained zero. However, in cluster 2, the predicted Bayley scores were negatively skewed at 6 months, in agreement with the preliminary analysis presented in Section \ref{s:nurt}. This suggests that the skewness observed in the data was driven primarily by the healthy-developing class, highlighting the model's ability to discern different skewness patterns across clusters. Finally, the estimated covariance matrix (Web Table 6) indicated an unstructured pattern for both clusters, with greater variability in cluster 2.
+
+\section{Discussion}
+\label{s:discuss}
+We have developed Bayesian multivariate skew-normal and skew-$t$ mixture of experts models for skewed longitudinal data that feature intermittent missingness. The model has many appealing features: it accounts for skewness in the infant development scores, associations among repeated measures, and efficient inference for the cluster assignment probabilities. Additionally, the model handles missing data under a conditional ignorability assumption that relaxes standard MAR assumptions. Here, we proposed an online procedure to impute missing responses from conditional MSN distributions. The model can incorporate time-varying and time-invariant covariates. While both designs admit closed-form full conditionals, the latter enables matrix skew-normal updates that enhance computational efficiency.
+
+Through simulations, we showed that ignoring skewness in even moderately skewed data results in incorrect inference, whereas the MSN mixture model recovers the true parameter values when the data are skewed. Furthermore, we showed that failing to account for conditional ignorability results in biased estimates when the response mechanism depends on cluster assignment. Finally, we conducted simulations to validate the use of WAIC, supporting the use of this measure in practice.
+
+We applied our method to the Nurture data to assess the effect of household food security during pregnancy on motor development scores and to investigate possible clustering of infant development trajectories. We identified two distinct clusters of infants: one with delayed motor development that was significantly impaired by food insecurity, and a second that exhibited healthy motor development but was only modestly affected by food insecurity toward the end of infancy. This suggests that household food insecurity may compound the negative impacts of delayed motor development. On the other hand, we found that breastfeeding improved motor development among infants with delayed development. Thus, health providers might work to encourage breastfeeding for infants showing signs of delayed motor achievement. These results add to the growing body of literature on the effect of household food security on infant outcomes, and provide potential targets for intervention during this critical developmental window.
+
+There are a number of possible extensions of this work. The model could accommodate dropout in addition to intermittent missingness by incorporating a cluster-specific discrete time-to-event model. Additionally, cluster-specific shared parameters could be used to link the outcome and missing data models, thus relaxing the conditional ignorability assumption. More broadly, the method should prove useful in a wide range of settings involving multivariate skew data with informative missing responses.
+
+\bibliographystyle{biom} \bibliography{refs}
+
+
+
+%Put your final comments here.
+
+%  The \backmatter command formats the subsequent headings so that they
+%  are in the journal style.  Please keep this command in your document
+%  in this position, right after the final section of the main part of
+%  the paper and right before the Acknowledgements, Supplementary Materials,
+%  and References sections.
+
+\backmatter
+
+%  This section is optional.  Here is where you will want to cite
+%  grants, people who helped with the paper, etc.  But keep it short!
+
+\section*{Acknowledgements}
+This work was supported by NIH grants R21 LM012866 and R01DK094841. %The funding agreement ensured the authors' independence in designing the study, interpreting the data, writing, and publishing the manuscript.
+%  If your paper refers to supplementary web material, then you MUST
+%  include this section!!  See Instructions for Authors at the journal
+%  website http://www.biometrics.tibs.org
+\section*{Supporting Information}
+The proof of Proposition 1, the MCMC algorithm referenced in Section 3, Web Tables 1 and 2 referenced in Section 2, Web Figures 1-3 and Web Tables 3-5 referenced in Section 4, and Web Figure 4 and Web Table 6 referenced in Section 5 may be found in the online version of this article at the publisher's web site. Data used for the simulation studies are available from the first author upon reasonable request. The data from the Nurture Study are not publicly available due to privacy or ethical restrictions.
+
+
+%  Here, we create the bibliographic entries manually, following the
+%  journal style.  If you use this method or use natbib, PLEASE PAY
+%  CAREFUL ATTENTION TO THE BIBLIOGRAPHIC STYLE IN A RECENT ISSUE OF
+%  THE JOURNAL AND FOLLOW IT!  Failure to follow stylistic conventions
+%  just lengthens the time spend copyediting your paper and hence its
+%  position in the publication queue should it be accepted.
+
+%  We greatly prefer that you incorporate the references for your
+%  article into the body of the article as we have done here
+%  (you can use natbib or not as you choose) than use BiBTeX,
+%  so that your article is self-contained in one file.
+%  If you do use BiBTeX, please use the .bst file that comes with
+%  the distribution.  In this case, replace the thebibliography
+%  environment below by
+%
+%  \bibliographystyle{biom}
+% \bibliography{mybibilo.bib}
+
+% \appendix
+
+%  To get the journal style of heading for an appendix, mimic the following.
+
+
+\label{lastpage}
+
+\end{document}

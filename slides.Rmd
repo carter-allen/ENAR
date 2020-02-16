@@ -1,10 +1,9 @@
 ---
-title: Talk
-author:
-- Carter Allen
-- Brian Neelon
-- Sara E. Benjamin-Neelon
-output: beamer_presentation
+title: A Bayesian multivariate mixture model
+author: Carter Allen
+output: 
+  beamer_presentation:
+    theme: Madrid
 ---
 
 ```{r setup, include=FALSE}
@@ -41,22 +40,3 @@ knitr::opts_chunk$set(echo = FALSE)
 
 - Existing approaches to modeling development clusters fail to account for one of more of these relevant features of the Nurture data.
 
-# Model: Mixture Model
-
-We propose a finite mixture model that accommodates skewness in residuals, non-ignorable missingness in outcomes, and unstructured dependence among repeated measures.
-
-The model is based on the multivariate skew normal (MSN) distribution, with extensions to the multivariate skew-$t$ (MST) distribution.
-
-Specifically, let $\mathbf{y}_{i}=(y_{i1},\ldots,y_{iJ})^T$ be a $J \times 1$ vector of standardized Bayley scores for subject $i\;(i=1,\ldots,n)$. We propose a mixture model of the form
-\begin{equation}
-	\label{eq:mixture}
-f(\mathbf{y}_i) = \sum_{k = 1}^{K} \pi_{ki} f(\mathbf{y}_i|\boldsymbol\theta_k),
-\end{equation}
-where $\boldsymbol\theta_k$ is the set of parameters specific to cluster $k$ ($k = 1,...,K$) and $\pi_{ki}$ is a subject-specific mixing weight representing the probability that subject $i$ belongs to cluster $k$.
-
-# Model: MSN Components
-
-For posterior inference, we introduce a latent cluster indicator variable $z_i$ taking the value $k \in \{1,...,K\}$ with probability $\pi_{ki}$. Given $z_i = k$, we assume $\mathbf{y}_{i}$ is distributed according to a $J$-dimensional multivariate skew normal (MSN) density:
-\begin{equation}
-\mathbf{y}_{i}|(z_i=k) &\stackrel{ind}{\sim}& \text{MSN}_J(\boldsymbol\zeta_{ki},\boldsymbol\alpha_k,\boldsymbol\Omega_k), ~\text{with density} \label{eq:msndens}\nonumber
-\end{equation}
